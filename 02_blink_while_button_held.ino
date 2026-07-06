@@ -15,10 +15,10 @@ void setup() {                          // runs once at startup
 }
 
 void loop() {                           // runs forever
-  int pressed = digitalRead(BTN_PIN);   // read the button: HIGH when released, LOW when pressed
+  int pressed = digitalRead(BTN_PIN);   // read the button: HIGH when pressed, LOW when released
   Serial.println(pressed);              // print that value so you can watch it change
 
-  if (pressed == LOW) {                 // LOW means the button IS being held down
+  if (pressed == HIGH) {                // HIGH means the button IS being held down
     digitalWrite(LED_PIN, HIGH);        // LED on
     delay(250);                         // wait a quarter second
     digitalWrite(LED_PIN, LOW);         // LED off
