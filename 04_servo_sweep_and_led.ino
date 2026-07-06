@@ -87,7 +87,7 @@ void loop() {                           // runs forever, very fast, without ever
   }
 
   // 3) Blink the LED while the button is held (independent of the servo)
-  if (digitalRead(BTN_PIN) == LOW) {    // LOW means the button is pressed
+  if (digitalRead(BTN_PIN) == HIGH) {    // HIGH means the button is pressed
     if (now - lastBlinkToggle >= BLINK_MS) {
       lastBlinkToggle = now;            // remember this toggle time
       ledOn = !ledOn;                   // flip the LED state
