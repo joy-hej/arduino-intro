@@ -41,7 +41,12 @@ unsigned long lastPing = 0;             // when we last read the sensor (in ms)
 const int PING_INTERVAL_MS = 60;        // how often to check distance
 long lastCm = -1;                       // most recent distance reading
 
+// --- serial debug printing (don't spam the monitor every loop) ---
+unsigned long lastDebugPrint = 0;       // when we last printed a status line
+const int DEBUG_INTERVAL_MS = 200;      // how often to print (slower than the loop so it's readable)
+
 void setup() {                          // runs once at startup
+  Serial.begin(9600);                   // open the serial port for debug output
   myServo.attach(SERVO_PIN);            // tell the library which pin the servo is on
   pinMode(BTN_PIN, INPUT_PULLUP);       // button reads in; internal pull-up means pressed = LOW
   pinMode(LED_PIN, OUTPUT);             // LED pin sends voltage out
@@ -87,7 +92,8 @@ void loop() {                           // runs forever, very fast, without ever
   }
 
   // 3) Blink the LED while the button is held (independent of the servo)
-  if (digitalRead(BTN_PIN) == HIGH) {    // HIGH means the button is pressed
+  bool buttonPressed = (digitalRead(BTN_PIN) == HIGH); // HIGH means the button is pressed
+  if (buttonPressed) {
     if (now - lastBlinkToggle >= BLINK_MS) {
       lastBlinkToggle = now;            // remember this toggle time
       ledOn = !ledOn;                   // flip the LED state
@@ -96,5 +102,24 @@ void loop() {                           // runs forever, very fast, without ever
   } else {                              // button released
     ledOn = false;                      // reset state
     digitalWrite(LED_PIN, LOW);         // LED off
+  }
+
+  // 4) Print a debug status line every DEBUG_INTERVAL_MS
+  if (now - lastDebugPrint >= DEBUG_INTERVAL_MS) {
+    lastDebugPrint = now;               // remember this print time
+
+    Serial.print("Distance: ");         // ultrasonic calibration reading
+    if (lastCm < 0) {
+      Serial.print("--- (no echo)");    // -1 means nothing came back / out of range
+    } else {
+      Serial.print(lastCm);
+      Serial.print(" cm");
+    }
+
+    Serial.print("  |  Triggered: ");   // is the proximity sweep active?
+    Serial.print(sweeping ? "YES" : "no");
+
+    Serial.print("  |  Button: ");      // is the button held down?
+    Serial.println(buttonPressed ? "PRESSED" : "released");
   }
 }
