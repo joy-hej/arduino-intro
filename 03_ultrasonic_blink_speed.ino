@@ -46,7 +46,7 @@ void loop() {                           // runs forever
     return;                             // done for this loop
   }
   // in between NEAR and FAR: closer = slower blink
-  int blinkDelay = map(cm, NEAR_CM, FAR_CM, 600, 60); // turn distance into a blink delay in ms
+  int blinkDelay = map(cm, NEAR_CM, FAR_CM, 60, 600); // turn distance into a blink delay in ms
   digitalWrite(LED, HIGH);              // LED on
   delay(blinkDelay);                    // wait (longer when closer)
   digitalWrite(LED, LOW);               // LED off
